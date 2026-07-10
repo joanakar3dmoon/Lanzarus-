@@ -438,6 +438,72 @@ Comandos:
         }
     }
 
+
+    fun addManualInvestment(symbol: String, amount: Double, price: Double) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val user = repository.getUserSync() ?: return@launch
+            if (amount > user.balance) {
+                addLog("❌ Saldo insuficiente para invertir en $symbol")
+                showNotification("Saldo insuficiente")
+                return@launch
+            }
+            user.balance -= amount
+            user.investedCapital += amount
+            repository.updateUser(user)
+
+            val order = InvestmentOrderEntity(
+                symbol = symbol,
+                amount = amount,
+                entryPrice = price,
+                currentPrice = price,
+                type = "BUY",
+                timestamp = System.currentTimeMillis(),
+                status = "ACTIVE"
+            )
+            repository.insertOrder(order)
+
+            val tx = TransactionEntity(
+                type = "INVESTMENT",
+                amount = amount,
+                status = "COMPLETED",
+                timestamp = System.currentTimeMillis(),
+                details = "Inversión en $symbol a ${"%.2f".format(price)} USD"
+            )
+            repository.insertTransaction(tx)
+            addLog("📈 Inversión: +${"%.2f".format(amount)} USD en $symbol")
+            showNotification("Inversión registrada en $symbol ✅")
+        }
+    }
+
+    fun closeInvestment(orderId: Int, currentPrice: Double) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val orders = repository.allInvestments.first()
+            val order = orders.find { it.id == orderId } ?: return@launch
+
+            val profitLoss = order.amount * (currentPrice - order.entryPrice) / order.entryPrice
+
+            order.currentPrice = currentPrice
+            order.profit = profitLoss
+            order.status = "CLOSED"
+            repository.updateOrder(order)
+
+            val user = repository.getUserSync() ?: return@launch
+            user.balance += order.amount + profitLoss
+            user.investedCapital -= order.amount
+            repository.updateUser(user)
+
+            val tx = TransactionEntity(
+                type = "CLOSE_INVESTMENT",
+                amount = order.amount + profitLoss,
+                status = "COMPLETED",
+                timestamp = System.currentTimeMillis(),
+                details = "Cierre de $symbol: ${"%.2f".format(profitLoss)} USD de ganancia/pérdida"
+            )
+            repository.insertTransaction(tx)
+            addLog("🔒 Inversión cerrada: ${order.symbol} (${"%.2f".format(profitLoss)} USD)")
+        }
+    }
+
     fun showNotification(message: String) {
         _notification.value = message
     }
