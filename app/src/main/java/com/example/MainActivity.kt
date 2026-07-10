@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         // Iniciar AdMob y precargar anuncios
-        AdsManager.init(applicationContext)
+        AdsManager.initialize(applicationContext)
 
         // Initialize Notification Channels for Android 8.0+ Oreo
         NotificationHelper.createNotificationChannels(applicationContext)
