@@ -31,6 +31,21 @@ class LanzarusViewModel(
     val chatMessagesState: StateFlow<List<ChatMessageEntity>> = repository.chatMessages
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    // Full investment list (needed by MainScreen)
+    val allInvestmentsState: StateFlow<List<InvestmentOrderEntity>> = repository.allInvestments
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    // Stubs for UI compatibility - always return safe defaults
+    val isBotActive = MutableStateFlow(false).asStateFlow()
+    val botRiskLevel = MutableStateFlow("MODERADO").asStateFlow()
+    val isChatLoading = MutableStateFlow(false).asStateFlow()
+    val systemLogs = MutableStateFlow<List<String>>(emptyList()).asStateFlow()
+    val geminiRecommendation = MutableStateFlow<String?>(null).asStateFlow()
+    val isRecommendationLoading = MutableStateFlow(false).asStateFlow()
+    val liveMarketPrices = MutableStateFlow<Map<String, Double>>(mapOf(
+        "BTC/USDT" to 65000.0, "ETH/USDT" to 3400.0
+    )).asStateFlow()
+
     private val _notification = MutableStateFlow<String?>(null)
     val notification: StateFlow<String?> = _notification.asStateFlow()
 
