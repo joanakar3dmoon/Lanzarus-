@@ -424,7 +424,6 @@ Comandos:
     }
 
     // ==== UI HELPERS ====
-    fun toggleBot() // already defined above
     fun setRiskLevel(level: String) {
         _botRiskLevel.value = level
         addLog("🎯 Riesgo cambiado a: $level")
