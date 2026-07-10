@@ -11,12 +11,16 @@ import com.example.ui.screens.MainScreen
 import com.example.ui.theme.MyApplicationTheme
 import com.example.ui.viewmodel.LanzarusViewModel
 import com.example.ui.viewmodel.LanzarusViewModelFactory
+import com.example.util.AdsManager
 import com.example.util.NotificationHelper
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Iniciar AdMob y precargar anuncios
+        AdsManager.init(applicationContext)
 
         // Initialize Notification Channels for Android 8.0+ Oreo
         NotificationHelper.createNotificationChannels(applicationContext)
