@@ -1,21 +1,36 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
-
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
-
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
-
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# ProGuard rules for Lanzarus v1.1.0
+# Firebase AI
+-keep class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }
+# Retrofit
+-keepattributes Signature, *Annotation*, EnclosingMethod, InnerClasses
+-keep class retrofit2.** { *; }
+-keepclasseswithmembers class * {
+    @retrofit2.http.* <methods>;
+}
+# Moshi
+-keep class com.squareup.moshi.** { *; }
+-keepclassmembers class * {
+    @com.squareup.moshi.FromJson <methods>;
+    @com.squareup.moshi.ToJson <methods>;
+}
+# Keep model/data classes (Moshi needs them)
+-keep class com.example.data.model.** { *; }
+-keep class com.example.api.** { *; }
+# Room
+-keep class * extends androidx.room.RoomDatabase
+-keep @androidx.room.Entity class *
+-dontwarn androidx.room.paging.**
+# OkHttp / Logging
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+-keep class com.squareup.okhttp.** { *; }
+# Coil
+-keep class coil.** { *; }
+# Kotlin Coroutines
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+# General Android
+-keep class * extends androidx.activity.ComponentActivity { *; }
+-keep class * implements android.os.Parcelable { *; }
+-keep class * implements java.io.Serializable { *; }
