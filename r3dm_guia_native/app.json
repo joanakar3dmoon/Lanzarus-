@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "R3DM Guia",
+    "slug": "r3dmguiapromo",
+    "version": "1.3.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": { "supportsTablet": true, "bundleIdentifier": "com.r3dm.guia" },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#000000"
+      },
+      "package": "com.r3dm.guia",
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-4903263409458961~2391607033"
+      }
+    },
+    "plugins": [
+      "@react-native-google-mobile-ads",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.1",
+            "packagingOptions": { "exclude": ["META-INF/LICENSE.md"] }
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "admobAppId": "ca-app-pub-4903263409458961~2391607033",
+      "admobBannerId": "ca-app-pub-4903263409458961/6771307929"
+    },
+    "runtimeVersion": { "policy": "appVersion" },
+    "updates": { "url": "https://u.expo.dev/da7fe414-f417-4018-9b7d-2eeef46b99b7" }
+  }
+}
