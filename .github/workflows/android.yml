@@ -17,40 +17,18 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Grant execute permission for gradlew
+      - name: Grant execute permission
         run: chmod +x gradlew
 
       - name: Build Release APK
-        run: ./gradlew assembleRelease
-
-      - name: Sign APK
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: 34.0.0
-
-      - name: Rename APK
         run: |
-          cd app/build/outputs/apk/release
-          mv app-release-unsigned.apk Lanzarus-v1.0.0-alpha.apk || true
-          mv app-release-signed.apk Lanzarus-v1.0.0-alpha.apk || true
+          export STORE_PASSWORD=Lanzarus2026!
+          export KEY_PASSWORD=Lanzarus2026!
+          export KEYSTORE_PATH=${GITHUB_WORKSPACE}/app/my-upload-key.jks
+          ./gradlew assembleRelease
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
-          files: app/build/outputs/apk/release/*.apk
-          tag_name: v1.0.0-alpha
-          name: Lanzarus v1.0.0 Alpha
-          draft: false
-          prerelease: true
-          generate_release_notes: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: Lanzarus-APK
+          path: app/build/outputs/apk/release/*.apk
