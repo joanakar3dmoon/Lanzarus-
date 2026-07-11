@@ -22,8 +22,8 @@ jobs:
 
       - name: Build Release APK
         run: |
-          export STORE_PASSWORD=Lanzarus2026!
-          export KEY_PASSWORD=Lanzarus2026!
+          export STORE_PASSWORD='Lanzarus2026!'
+          export KEY_PASSWORD='Lanzarus2026!'
           export KEYSTORE_PATH=${GITHUB_WORKSPACE}/app/my-upload-key.jks
           ./gradlew assembleRelease
 
