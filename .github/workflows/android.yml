@@ -1,4 +1,5 @@
 name: Build Android APK
+
 on:
   push:
     branches: [main]
@@ -19,26 +20,18 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
-      - name: Generate release keystore
-        run: |
-          keytool -genkeypair -v -keystore lanzarus.keystore -alias lanzarus -keyalg RSA -keysize 2048 -validity 10000 -storepass r3dmoon2026 -keypass r3dmoon2026 -dname "CN=Joan, OU=Dev, O=Lanzarus, L=Barcelona, ST=BCN, C=ES"
+      - name: Create .env with API key
+        run: echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" > .env
 
       - name: Build Release APK
         run: |
-          export STORE_PASSWORD=r3dmoon2026
-          export KEY_PASSWORD=r3dmoon2026
-          export KEY_ALIAS=lanzarus
-          export KEYSTORE_PATH=$GITHUB_WORKSPACE/lanzarus.keystore
+          export STORE_PASSWORD=Lanzarus2026!
+          export KEY_PASSWORD=Lanzarus2026!
+          export KEYSTORE_PATH=${GITHUB_WORKSPACE}/app/my-upload-key.jks
           ./gradlew assembleRelease
-
-      - name: Verify Signature
-        run: |
-          APK=$(find app/build/outputs/apk/release/ -name "*.apk" | head -1)
-          echo "APK: $APK"
-          unzip -l "$APK" | grep META-INF
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Lanzarus-APK-FIRMADO
+          name: Lanzarus-APK
           path: app/build/outputs/apk/release/*.apk
