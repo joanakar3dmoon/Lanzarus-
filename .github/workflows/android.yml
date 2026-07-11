@@ -3,21 +3,26 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
+
       - name: Grant execute permission
         run: chmod +x gradlew
+
       - name: Generate release keystore
         run: |
           keytool -genkeypair -v -keystore lanzarus.keystore -alias lanzarus -keyalg RSA -keysize 2048 -validity 10000 -storepass r3dmoon2026 -keypass r3dmoon2026 -dname "CN=Joan, OU=Dev, O=Lanzarus, L=Barcelona, ST=BCN, C=ES"
+
       - name: Build Release APK
         run: |
           export STORE_PASSWORD=r3dmoon2026
@@ -25,8 +30,15 @@ jobs:
           export KEY_ALIAS=lanzarus
           export KEYSTORE_PATH=$GITHUB_WORKSPACE/lanzarus.keystore
           ./gradlew assembleRelease
+
+      - name: Verify Signature
+        run: |
+          APK=$(find app/build/outputs/apk/release/ -name "*.apk" | head -1)
+          echo "APK: $APK"
+          unzip -l "$APK" | grep META-INF
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Lanzarus-APK
+          name: Lanzarus-APK-FIRMADO
           path: app/build/outputs/apk/release/*.apk
