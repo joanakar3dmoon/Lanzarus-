@@ -27,6 +27,7 @@ jobs:
         run: |
           export STORE_PASSWORD=Lanzarus2026!
           export KEY_PASSWORD=Lanzarus2026!
+          export KEY_ALIAS=upload
           export KEYSTORE_PATH=${GITHUB_WORKSPACE}/app/my-upload-key.jks
           ./gradlew assembleRelease
 
