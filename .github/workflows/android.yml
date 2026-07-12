@@ -1,4 +1,5 @@
 name: Build Android APK
+
 on:
   push:
     branches: [main]
@@ -19,91 +20,18 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
-      - name: Generate release keystore
-        run: |
-          keytool -genkeypair -v -keystore $GITHUB_WORKSPACE/lanzarus.keystore -alias lanzarus -keyalg RSA -keysize 2048 -validity 10000 -storepass r3dmoon2026 -keypass r3dmoon2026 -dname "CN=Joan, OU=Dev, O=Lanzarus, L=Barcelona, ST=BCN, C=ES"
+      - name: Create .env with API key
+        run: echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" > .env
 
       - name: Build Release APK
         run: |
-          export STORE_PASSWORD=r3dmoon2026
-          export KEY_PASSWORD=r3dmoon2026
-          export KEY_ALIAS=lanzarus
-          export KEYSTORE_PATH=$GITHUB_WORKSPACE/lanzarus.keystore
+          export STORE_PASSWORD=Lanzarus2026!
+          export KEY_PASSWORD=Lanzarus2026!
+          export KEYSTORE_PATH=${GITHUB_WORKSPACE}/app/my-upload-key.jks
           ./gradlew assembleRelease
-
-      - name: Force sign APK (jarsigner)
-        run: |
-          APK=$(find app/build/outputs/apk/release/ -name "*.apk" | head -1)
-          echo "Signing APK: $APK"
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore $GITHUB_WORKSPACE/lanzarus.keystore \
-            -storepass r3dmoon2026 -keypass r3dmoon2026 \
-            "$APK" lanzarus
-          jarsigner -verify -certs "$APK"
-
-      - name: Zipalign APK
-        run: |
-          APK=$(find app/build/outputs/apk/release/ -name "*.apk" | head -1)
-          ALIGNED=${APK%.apk}-aligned.apk
-          $ANDROID_HOME/build-tools/34.0.0/zipalign -v -p 4 "$APK" "$ALIGNED"
-          mv "$ALIGNED" "$APK"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Lanzarus-APK-FIRMADO
-          path: app/build/outputs/apk/release/*.apkname: Build Android APK
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-
-      - name: Grant execute permission
-        run: chmod +x gradlew
-
-      - name: Generate release keystore
-        run: |
-          keytool -genkeypair -v -keystore $GITHUB_WORKSPACE/lanzarus.keystore -alias lanzarus -keyalg RSA -keysize 2048 -validity 10000 -storepass r3dmoon2026 -keypass r3dmoon2026 -dname "CN=Joan, OU=Dev, O=Lanzarus, L=Barcelona, ST=BCN, C=ES"
-
-      - name: Build Release APK
-        run: |
-          export STORE_PASSWORD=r3dmoon2026
-          export KEY_PASSWORD=r3dmoon2026
-          export KEY_ALIAS=lanzarus
-          export KEYSTORE_PATH=$GITHUB_WORKSPACE/lanzarus.keystore
-          ./gradlew assembleRelease
-
-      - name: Force sign APK (jarsigner)
-        run: |
-          APK=$(find app/build/outputs/apk/release/ -name "*.apk" | head -1)
-          echo "Signing APK: $APK"
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore $GITHUB_WORKSPACE/lanzarus.keystore \
-            -storepass r3dmoon2026 -keypass r3dmoon2026 \
-            "$APK" lanzarus
-          jarsigner -verify -certs "$APK"
-
-      - name: Zipalign APK
-        run: |
-          APK=$(find app/build/outputs/apk/release/ -name "*.apk" | head -1)
-          ALIGNED=${APK%.apk}-aligned.apk
-          $ANDROID_HOME/build-tools/34.0.0/zipalign -v -p 4 "$APK" "$ALIGNED"
-          mv "$ALIGNED" "$APK"
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Lanzarus-APK-FIRMADO
+          name: Lanzarus-APK
           path: app/build/outputs/apk/release/*.apk
