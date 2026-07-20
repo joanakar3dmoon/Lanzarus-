@@ -15,11 +15,10 @@ import com.example.data.model.*
         InvestmentOrderEntity::class,
         ChatMessageEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class LanzarusDatabase : RoomDatabase() {
-
     abstract fun userDao(): UserDao
     abstract fun transactionDao(): TransactionDao
     abstract fun contentDao(): ContentDao
