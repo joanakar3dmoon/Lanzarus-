@@ -41,28 +41,11 @@ jobs:
           KEY_PASSWORD: Lanzarus2026!
           KEY_ALIAS: upload
           KEYSTORE_PATH: ${{ github.workspace }}/app/my-upload-key.jks
-        run: ./gradlew assembleRelease --no-daemon --stacktrace
+        run: ./gradlew assembleRelease --no-daemon
 
-      - name: Preparar APK
-        run: |
-          mkdir -p output
-          find app/build/outputs/apk/release/ -name '*.apk' | head -1 | xargs -I{} cp {} output/Lanzarus-v${{ github.run_number }}.apk
-
-      - name: Subir artefacto
+      - name: Subir APK
         uses: actions/upload-artifact@v4
         with:
           name: Lanzarus-APK-v${{ github.run_number }}
-          path: output/Lanzarus-v${{ github.run_number }}.apk
+          path: app/build/outputs/apk/release/*.apk
           retention-days: 30
-
-      - name: GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v1.0.${{ github.run_number }}
-          name: "Lanzarus v1.0.${{ github.run_number }}"
-          files: output/Lanzarus-v${{ github.run_number }}.apk
-          body: |
-            Lanzarus APK - build automatica ${{ github.run_number }}
-            Instalacion: Ajustes > Seguridad > Fuentes desconocidas > instalar APK
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
