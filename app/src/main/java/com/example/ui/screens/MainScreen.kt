@@ -178,7 +178,7 @@ fun MainScreen(viewModel: LanzarusViewModel) {
                 AndroidView(
                     factory = { ctx ->
                         AdView(ctx).apply {
-                            adUnitId = "ca-app-pub-4903263409458961/8928635042"
+                            adUnitId = AdsManager.BANNER_ID
                             adSize = AdSize.BANNER
                             loadAd(AdRequest.Builder().build())
                         }
